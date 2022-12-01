@@ -295,25 +295,29 @@ class Animarker extends StatefulWidget {
   ///
   final Duration rippleIdleAfter;
 
-  Animarker({
-    Key? key,
-    required this.child,
-    required this.mapId,
-    this.curve = Curves.linear,
-    this.onStopover,
-    this.zoom = 15.0,
-    this.rippleRadius = 0.5,
-    this.runExpressAfter = 10,
-    this.angleThreshold = 1.5,
-    this.useRotation = true,
-    this.rippleIdleAfter = const Duration(seconds: 30),
-    this.isActiveTrip = true,
-    this.rippleColor = Colors.red,
-    this.markers = const <Marker>{},
-    this.duration = const Duration(milliseconds: 1000),
-    this.rippleDuration = const Duration(milliseconds: 2000),
-    this.shouldAnimateCamera = true,
-  })  : assert(rippleRadius >= 0.0 && rippleRadius <= 1.0,
+  ///If you have multiple markers you can set one marker position to apply camera animation
+  final LatLng? animatePosition;
+
+  Animarker(
+      {Key? key,
+      required this.child,
+      required this.mapId,
+      this.curve = Curves.linear,
+      this.onStopover,
+      this.zoom = 15.0,
+      this.rippleRadius = 0.5,
+      this.runExpressAfter = 10,
+      this.angleThreshold = 1.5,
+      this.useRotation = true,
+      this.rippleIdleAfter = const Duration(seconds: 30),
+      this.isActiveTrip = true,
+      this.rippleColor = Colors.red,
+      this.markers = const <Marker>{},
+      this.duration = const Duration(milliseconds: 1000),
+      this.rippleDuration = const Duration(milliseconds: 2000),
+      this.shouldAnimateCamera = true,
+      this.animatePosition})
+      : assert(rippleRadius >= 0.0 && rippleRadius <= 1.0,
             'Must choose values between [0.0, 1.0] for radius scale'),
         assert(!markers.isAnyEmpty, 'Must choose a not empty MarkerId'),
         assert(markers.markerIds.length == markers.length,
@@ -459,7 +463,12 @@ class AnimarkerState extends State<Animarker> with TickerProviderStateMixin {
   }
 
   Future<void> _animateCamera() async {
-    midPoint = _calculateMidPoint();
+    if (widget.animatePosition != null) {
+      midPoint = ILatLng.point(
+          widget.animatePosition!.latitude, widget.animatePosition!.longitude);
+    } else {
+      midPoint = _calculateMidPoint();
+    }
 
     if (midPoint.isNotEmpty) {
       var camera = CameraPosition(

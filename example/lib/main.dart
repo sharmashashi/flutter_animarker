@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animarker/flutter_map_marker_animation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'listen_locations_updates.dart';
+// import 'listen_locations_updates.dart';
 
 //Setting dummies values
 const kStartPosition = LatLng(18.488213, -69.959186);
@@ -42,6 +42,7 @@ class SimpleMarkerAnimationExampleState
     return MaterialApp(
       title: 'Google Maps Markers Animation Example',
       home: Animarker(
+        animatePosition: LatLng(18.488101, -69.957995),
         curve: Curves.bounceOut,
         rippleRadius: 0.2,
         useRotation: false,
@@ -69,10 +70,16 @@ class SimpleMarkerAnimationExampleState
         onTap: () {
           print('Tapped! $latLng');
         });
-    setState(() => markers[kMarkerId] = marker);
+    setState(() {
+      markers[kMarkerId] = marker;
+      // markers[MarkerId("value")] = RippleMarker(
+      //   position: LatLng(0,0),
+      //   markerId: MarkerId("value"),
+      // );
+    });
   }
 }
 
 void main() {
-  runApp(FlutterMapMarkerAnimationRealTimeExample());
+  runApp(SimpleMarkerAnimationExample());
 }
